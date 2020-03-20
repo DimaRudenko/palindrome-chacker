@@ -1,11 +1,12 @@
 import React, {useReducer, useEffect} from 'react';
 import {AppContext} from './appContext';
 import {appReducer} from './appReducer';
-import {UPDATE_TEXT} from './actionTypes'
+import {UPDATE_TEXT, UPDATE_FILE_NAME, CLEAR_ALL} from './actionTypes'
 import {searchPalindromes} from "../util/util";
 
 export const AppState = ({children}) => {
     const initialState = {
+        fileName: 'Выберете файл',
         currentText: '',
         searchPalindromeResult: [{  // just for structure info
             originalText: '',
@@ -14,7 +15,6 @@ export const AppState = ({children}) => {
             length: 0
         }],
         bestPalindrome: {}
-
     };
     const [state, dispatch] = useReducer(appReducer, initialState);
 
@@ -30,7 +30,20 @@ export const AppState = ({children}) => {
         });
     };
 
-    const {currentText, searchPalindromeResult, bestPalindrome} = state;
+    const updateFileName = (fileName) => {
+        dispatch({
+            type: UPDATE_FILE_NAME,
+            payload: fileName
+        });
+    };
+
+    const clearAll = ()=>{
+        dispatch({
+            type: CLEAR_ALL
+        });
+    };
+
+    const {currentText, searchPalindromeResult, bestPalindrome, fileName} = state;
 
     useEffect(() => {
         updateText(`казак
@@ -43,7 +56,8 @@ Amore, Roma.
 
     return (
         <AppContext.Provider value={{
-            currentText, updateText, searchPalindromeResult, bestPalindrome
+            currentText, updateText, searchPalindromeResult, bestPalindrome,
+            fileName, updateFileName, clearAll
         }}>
             {children}
         </AppContext.Provider>
